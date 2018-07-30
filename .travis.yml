@@ -1,0 +1,14 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker build --force-rm --no-cache --build-arg "GO_VERSION=${GO_VERSION}" --build-arg "COMPONENT=hello-spinnaker" -t hello-spinnaker .
+  - wget "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v1.5.0/docker-credential-gcr_linux_amd64-1.5.0.tar.gz"
+  - tar xvzf docker-credential-gcr_linux_amd64-1.5.0.tar.gz
+  - chmod +x docker-credential-gcr
+  - echo ${GCR_DOCKER_REGISTRY_SERVICE_ACCOUNT_KEY} | docker login -u _json_key --password-stdin ${DOCKER_REGISTRY_AUTH_URL}
+  - TAG=${TRAVIS_PULL_REQUEST}
+  - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
+  - docker push ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
