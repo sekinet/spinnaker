@@ -1,6 +1,9 @@
-FROM gcr.io/cloud-builders/docker:latest as builder
-FROM alpine
+FROM ubuntu:14.04
+RUN apt-get update
+RUN apt-get install -y nginx
+ADD nginx.conf /etc/nginx/nginx.conf
 
-COPY gopath/bin/gcp-cd-codelab /go/bin/gcp-cd-codelab
+ADD ./www-data /www-data
 
-ENTRYPOINT /go/bin/gcp-cd-codelab
+EXPOSE 80
+CMD ["nginx"]
