@@ -33,9 +33,9 @@ metadata:
     stack: travis
 spec:
   containers:
-  - image: $DOCKER_REGISTRY/$DOCKER_PROJECT/hello-spinnaker:pr-$TAG
+  - image: $DOCKER_REGISTRY/$GCLOUD_PROJECT/hello-spinnaker:pr-$TAG
     imagePullPolicy: Always
-    name: $DOCKER_PROJECT-hello-spinnaker
+    name: $GCLOUD_PROJECT-hello-spinnaker
     ports:
     - containerPort: 80
       name: http

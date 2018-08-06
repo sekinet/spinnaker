@@ -9,7 +9,7 @@ script:
   - tar xvzf docker-credential-gcr_linux_amd64-1.5.0.tar.gz
   - chmod +x docker-credential-gcr
   - echo ${GCR_DOCKER_REGISTRY_SERVICE_ACCOUNT_KEY} | docker login -u _json_key --password-stdin ${DOCKER_REGISTRY_AUTH_URL}
-  - TAG=${TRAVIS_PULL_REQUEST}
-  - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
-  - docker push ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
+  - export TAG=${TRAVIS_PULL_REQUEST}
+  - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
+  - docker push ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
   - bash deploy.sh
