@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demohttpserver-travis
+  namespace: $NAMESPACE
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    load-balancer-demohttpserver-travis: "true"
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demohttpserver-travis
+  namespace: $NAMESPACE
+  labels:
+    app: demohttpserver
+    cluster: demohttpserver-travis
+    load-balancer-demohttpserver-travis: "true"
+    stack: travis
+spec:
+  containers:
+  - image: $DOCKER_REGISTRY/$DOCKER_PROJECT/hello-spinnaker:pr-$TAG
+    imagePullPolicy: Always
+    name: $DOCKER_PROJECT-hello-spinnaker
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+    resources:
+      requests:
+        cpu: 100m
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File

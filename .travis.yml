@@ -12,3 +12,4 @@ script:
   - TAG=${TRAVIS_PULL_REQUEST}
   - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
   - docker push ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/hello-spinnaker:pr-${TAG}
+  - bash deploy.sh
