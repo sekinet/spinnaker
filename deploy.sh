@@ -8,6 +8,22 @@ function stride_notification () {
   --url $STRIDE_CONVERSATION_URL
 }
 
+# Install kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# Install gcloud command
+export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update && sudo apt-get install google-cloud-sdk
+
+# Setup GKE credentials
+echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json --project ${GCLOUD_PROJECT}
+gcloud container clusters get-credentials ${GKE_CLUSTER} --zone ${GKE_ZONE}
+
 cat manifest.tmpl | \
 sed 's/\$DOCKER_REGISTRY'"/$DOCKER_REGISTRY/g" | \
 sed 's/\$DOCKER_PROJECT'"/$DOCKER_PROJECT/g" | \
