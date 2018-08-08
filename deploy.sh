@@ -32,7 +32,7 @@ sed 's/\$NAMESPACE'"/$NAMESPACE/g" | \
 kubectl apply -f -
 
 while true; do
-  external_ip=`kubectl get services --namespace austin | tail -n1 | awk '{print $4}'`
+  external_ip=`kubectl get services --namespace $NAMESPACE | tail -n1 | awk '{print $4}'`
   echo $external_ip
   if [ $external_ip != "<pending>" ]; then
     stride_notification $external_ip "DEPLOYED"
@@ -42,4 +42,4 @@ while true; do
 done
 
 sleep 300
-kubectl delete namespace $NAMESPACE
+kubectl delete namespace $NAMESPACE | true

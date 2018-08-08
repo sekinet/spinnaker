@@ -13,5 +13,4 @@ script:
   - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
   - docker push ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
   - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
-  - echo $AUTHOR_NAME
   - bash deploy.sh
