@@ -3,14 +3,17 @@ sudo: required
 services:
   - docker
 
+before_script:
+  - export NAMESPACE="$TRAVIS_PULL_REQUEST_BRANCH-${TRAVIS_PULL_REQUEST}"
+  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+  - export TAG="${TRAVIS_PULL_REQUEST}"
+
 script:
   - docker build --force-rm --no-cache --build-arg "GO_VERSION=${GO_VERSION}" --build-arg "COMPONENT=hello-spinnaker" -t hello-spinnaker .
   - wget "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v1.5.0/docker-credential-gcr_linux_amd64-1.5.0.tar.gz"
   - tar xvzf docker-credential-gcr_linux_amd64-1.5.0.tar.gz
   - chmod +x docker-credential-gcr
   - echo ${GCR_DOCKER_REGISTRY_SERVICE_ACCOUNT_KEY} | docker login -u _json_key --password-stdin ${DOCKER_REGISTRY_AUTH_URL}
-  - export TAG=${TRAVIS_PULL_REQUEST}
   - docker tag hello-spinnaker ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
   - docker push ${DOCKER_REGISTRY}/${GCLOUD_PROJECT}/hello-spinnaker:pr-${TAG}
-  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
   - bash deploy.sh
